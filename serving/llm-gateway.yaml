@@ -13,31 +13,50 @@ spec:
   inputs:
     parameters: []
     artifacts: []
-  template:
-    apiVersion: serving.kserve.io/v1beta1
-    kind: InferenceService
-    metadata:
-      annotations:
-        autoscaling.knative.dev/metric: concurrency
-        autoscaling.knative.dev/target: "1"
-        autoscaling.knative.dev/targetBurstCapacity: "0"
-    spec:
-      predictor:
-        minReplicas: 1
-        maxReplicas: 2
-        custom:
-          containers:
-            - name: llm-gateway
-              image: docker.io/romi9035/llm-gateway:1.0
-              ports:
-                - containerPort: 8081
-              envFrom:
-                - secretRef:
-                    name: azure-openai-config
-              resources:
-                requests:
-                  cpu: "0.1"
-                  memory: "256Mi"
-                limits:
-                  cpu: "1"
-                  memory: "512Mi"
+  template: |-
+    {
+      "apiVersion": "serving.kserve.io/v1beta1",
+      "kind": "InferenceService",
+      "metadata": {
+        "annotations": {
+          "autoscaling.knative.dev/metric": "concurrency",
+          "autoscaling.knative.dev/target": "1"
+        }
+      },
+      "spec": {
+        "predictor": {
+          "minReplicas": 1,
+          "maxReplicas": 2,
+          "custom": {
+            "containers": [
+              {
+                "name": "llm-gateway",
+                "image": "docker.io/romi9035/llm-gateway:1.0",
+                "ports": [
+                  {
+                    "containerPort": 8081
+                  }
+                ],
+                "envFrom": [
+                  {
+                    "secretRef": {
+                      "name": "azure-openai-config"
+                    }
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "0.1",
+                    "memory": "256Mi"
+                  },
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "512Mi"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
