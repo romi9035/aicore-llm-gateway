@@ -13,7 +13,7 @@ spec:
   inputs:
     parameters: []
     artifacts: []
-  template:
+  template: |
     apiVersion: "serving.kserve.io/v1beta1"
     metadata:
       annotations:
