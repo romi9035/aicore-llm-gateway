@@ -1,0 +1,21 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: llm-gateway
+  labels:
+    scenarios.ai.sap.com/id: "llm-gateway-scenario"
+    ai.sap.com/resourcePlan: "starter"
+  annotations:
+    scenarios.ai.sap.com/name: "LLM Gateway Scenario"
+    executables.ai.sap.com/name: "llm-gateway-executable"
+    executables.ai.sap.com/description: "Azure OpenAI proxy service"
+spec:
+  predictor:
+    containers:
+      - name: llm-gateway
+        image: docker.io/romi9035/llm-gateway:1.0
+        ports:
+          - containerPort: 8081
+        envFrom:
+          - secretRef:
+              name: azure-openai-config
